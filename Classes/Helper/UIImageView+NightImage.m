@@ -10,6 +10,8 @@
 #import "DKNightVersionManager.h"
 #import <objc/runtime.h>
 
+static const void *kNormalImageKey = &kNormalImageKey;
+
 @interface UIView ()
 
 @property (nonatomic, strong) UIImage *normalImage;
@@ -35,6 +37,13 @@
             method_exchangeImplementations(originalMethod, swizzledMethod);
         }
     });
+}
+- (NSString *)normalImage {
+    return objc_getAssociatedObject(self, kNormalImageKey);
+}
+
+- (void)setNormalImage:(NSString *)normalImage{
+    objc_setAssociatedObject(self, kNormalImageKey, normalImage, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)hook_setImage:(UIImage *)image {
